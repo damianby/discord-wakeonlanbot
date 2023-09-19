@@ -2,6 +2,8 @@ const { SlashCommandBuilder } = require('discord.js');
 
 const wolManager = require('../wolmanager');
 
+const { EmbedBuilder } = require('discord.js');
+
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('wakemypc')
@@ -15,15 +17,35 @@ module.exports = {
 
 		const friendlyName = interaction.options.getString('friendly_name');
 
-		wolManager.wakePc(interaction.user.id, friendlyName, (isAlive, timeout) => {
+		const embed = new EmbedBuilder()
+		.setColor(0xFF0000)
+		.setTitle('PC Startup')
+		.setTimestamp();
+		
+		const result = wolManager.wakePc(interaction.user.id, friendlyName, (isAlive, timeout) => {
 			if(isAlive) {
-				interaction.followUp({ content: `Your PC is online!`, ephemeral: true });
+
+				embed.setDescription('Your PC is online!');
+				embed.setFooter({ text: '\u200B', iconURL: 'https://i.imgur.com/AfFp7pu.png'});
+
+				embed.setColor(0x00FF00);
+
+				interaction.editReply({ embeds: [embed], ephemeral: true });
 			} else {
-				interaction.followUp({ content: `After ${timeout} your PC is still dead`, ephemeral: true });
+				embed.setDescription(`After ${timeout} your PC is still dead`);
+				interaction.editReply({ embeds: [embed], ephemeral: true });
 			}
 		});
 
-		await interaction.reply({ content: 'Magic packet sent! Waiting for PC to come online!', ephemeral: true });
+		if(result.client) {
+			embed.setDescription(`Magic packet sent to ${result.client.friendlyName} with MAC address ${result.client.mac}.\nWaiting for response from address ${result.client.ipAddress}!`);
+			embed.setFooter({ text: 'This message will be automatically edited when PC is found online', iconURL: 'https://i.imgur.com/AfFp7pu.png'});
+
+		} else {
+			embed.setDescription(result.error);
+		}
+
+		await interaction.reply( {embeds: [embed], ephemeral: true });
 
 	},
 	async autocomplete(interaction) {

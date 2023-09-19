@@ -91,24 +91,27 @@ function wakePc(clientId, friendlyName, aliveCallback) {
 		wake(networks.fox.address, clientPc.mac);
 
 		let cfg = {
-			timeout: 60,
+			timeout: 10,
 		};
 
 		let host = clientPc.ipAddress;
-		ping.sys.probe(host, function(isAlive){
-			aliveCallback(isAlive, cfg.timeout);
-			//var msg = isAlive ? 'host ' + host + ' is alive' : 'host ' + host + ' is dead';
-			//console.log(msg);
-		}, cfg);
+		setTimeout(() => {
+			ping.sys.probe(host, function(isAlive, error){
 
+				console.log(error);
+				aliveCallback(isAlive, cfg.timeout);
+				
+				var msg = isAlive ? 'host ' + host + ' is alive' : 'host ' + host + ' is dead';
+				console.log(msg);
+			}, cfg);
+		}, 2000);
 
-
-		return {};
+		return {client: clientPc};
 	} else {
 		return {error: 'PC not found'};
 	}
-
 }
+
 
 module.exports = {
 	getPcs,
