@@ -1,0 +1,14 @@
+{
+    "749007095914954799": [
+        {
+            "friendlyName": "mypc",
+            "mac": "3C-7C-3F-F2-B0-0D",
+            "ipAddress": "192.168.1.104"
+        },
+        {
+            "friendlyName": "andrzej",
+            "mac": "d8-bb-c1-d3-b8-e9",
+            "ipAddress": "192.168.1.105"
+        }
+    ]
+}
