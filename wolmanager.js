@@ -14,7 +14,49 @@ const networks = {
 	}
 };
 
-//console.log(db.JSON());
+
+const Unifi = require('node-unifi');
+const unifi = new Unifi.Controller({host: '192.168.1.1', port: '443', sslverify: false});
+const loginData = unifi.login(process.env.UBIQUITI_LOGIN, process.env.UBIQUITI_PASSWD);
+
+async function isClientUp(mac) {
+	try {
+		const clientsData = await unifi.getClientDevice(mac);
+
+		let clientData = null;
+
+		if(clientsData.length > 0) {
+			clientData = clientsData[0];
+		}
+
+		if(!clientData) {
+			return false;
+		}
+
+		//console.log(clientData);
+	
+		// LOGOUT
+		//const logoutData = await unifi.logout();
+		//console.log('logout: ' + JSON.stringify(logoutData));
+
+		//console.log(clientData._last_reachable_by_gw);
+
+		if(clientData.ip && clientData._last_reachable_by_gw) {
+			if(Math.floor(Date.now() / 1000) - clientData._last_reachable_by_gw < 30) {
+				return true;	
+			} else {
+				return false;
+			}
+		} else {
+			return false;
+		}
+		
+	} catch (error) {
+		console.log('ERROR: ' + error);
+
+	return false;
+	}
+}
 
 function isValidMACAddress(str) {
 
@@ -69,21 +111,38 @@ function addPc(clientId, friendlyName, mac, ipAddress) {
 	return {};
 }
 
+function timeoutCheckAlive(mac, timeout) {
+	return new Promise((resolve, reject) => {
+
+		let scanInterval = null;
+		let aliveTimeout = null;
+
+		aliveTimeout = setTimeout(() => {
+			clearInterval(scanInterval);
+		
+			resolve(false);
+		}, timeout);
+
+		scanInterval = setInterval(async () => {
+			if(await isClientUp(mac)) {
+				clearInterval(scanInterval);
+				clearTimeout(aliveTimeout);
+				resolve(true);
+				
+			} else {
+				
+			}
+		}, 2000);
+	});
+}
+
 async function wakePc(clientMac, clientIp) {
 	
 	wake(networks.fox.address, clientMac);
 
-	let cfg = {
-		timeout: 120,
-	};
+	let res = await timeoutCheckAlive(clientMac, 180000);
 
-	let host = clientIp;
-
-	let res = await ping.promise.probe(host, {
-			timeout: cfg.timeout,
-	});
-
-	return res.alive
+	return res;
 }
 
 

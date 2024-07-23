@@ -37,7 +37,7 @@ module.exports = {
 		.setTitle('PC Startup')
 		.setTimestamp();
 
-		embed.setDescription(`Magic packet sent to ${friendlyName} with MAC address ${clientPc.mac}.\nWaiting for response from address ${clientPc.ipAddress}!`);
+		embed.setDescription(`Magic packet sent to ${clientPc.friendlyName} with MAC address ${clientPc.mac}.\nWaiting for response from address ${clientPc.ipAddress}!`);
 		
 		await interaction.reply( {embeds: [embed], ephemeral: true });
 
@@ -53,7 +53,7 @@ module.exports = {
 	
 					interaction.editReply({ embeds: [embed], ephemeral: true });
 				} else {
-					embed.setDescription(`After ${timeout} your PC is still dead`);
+					embed.setDescription(`After couple of minutes your PC is still dead`);
 					interaction.editReply({ embeds: [embed], ephemeral: true });
 				}
 			});
