@@ -4,6 +4,9 @@ require('dotenv').config();
 
 const clientId = process.env.CLIENT_ID;
 const guildId = process.env.GUILD_ID;
+
+const guildIds = JSON.parse(process.env.GUILD_IDS);
+
 const token = process.env.TOKEN;
 
 const fs = require('node:fs');
@@ -40,6 +43,32 @@ const rest = new REST().setToken(token);
 		);
 
 		console.log(`Successfully reloaded ${data.length} application (/) commands.`);
+	} catch (error) {
+		// And of course, make sure you catch and log any errors!
+		console.error(error);
+	}
+})();
+
+
+(async () => {
+	try {
+		console.log(`Started refreshing ${commands.length} application (/) commands.`);
+
+		// The put method is used to fully refresh all commands in the guild with the current set
+
+		for(let i = 0; i < guildIds.length; i++)
+		{
+			const data = await rest.put(
+				Routes.applicationGuildCommands(clientId, guildIds[i]),
+				{ body: commands },
+			);
+
+			console.log(`Successfully reloaded ${data.length} application (/) commands for guild ${guildIds[i]}`);
+		}
+
+
+
+		
 	} catch (error) {
 		// And of course, make sure you catch and log any errors!
 		console.error(error);

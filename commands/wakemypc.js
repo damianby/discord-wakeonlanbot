@@ -1,8 +1,6 @@
-const { SlashCommandBuilder } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 
 const wolManager = require('../wolmanager');
-
-const { EmbedBuilder } = require('discord.js');
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -26,8 +24,6 @@ module.exports = {
 			if(isAlive) {
 
 				embed.setDescription('Your PC is online!');
-				embed.setFooter({ text: '\u200B', iconURL: 'https://i.imgur.com/AfFp7pu.png'});
-
 				embed.setColor(0x00FF00);
 
 				interaction.editReply({ embeds: [embed], ephemeral: true });

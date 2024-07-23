@@ -14,7 +14,7 @@ const networks = {
 	}
 };
 
-console.log(db.JSON());
+//console.log(db.JSON());
 
 function isValidMACAddress(str) {
 
@@ -91,7 +91,7 @@ function wakePc(clientId, friendlyName, aliveCallback) {
 		wake(networks.fox.address, clientPc.mac);
 
 		let cfg = {
-			timeout: 10,
+			timeout: 120,
 		};
 
 		let host = clientPc.ipAddress;

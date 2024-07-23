@@ -1,4 +1,4 @@
-const { SlashCommandBuilder } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 
 const wolManager = require('../wolmanager');
 
@@ -20,18 +20,25 @@ module.exports = {
 				.setRequired(false)),
 	async execute(interaction) {
 
+
+		const embed = new EmbedBuilder()
+			.setTitle('List of PC\'s')
+			.setTimestamp();
+
+
 		const friendlyName = interaction.options.getString('friendly_name');
 		const macAddress = interaction.options.getString('mac_address');
 		const ipAddress = interaction.options.getString('ip_address') ?? null;
 
 		const result = wolManager.addPc(interaction.user.id, friendlyName, macAddress, ipAddress);
 
-
 		if(result.error) {
-			await interaction.reply({content: result.error, ephemeral: true});
+			embed.setTitle(`${result.error}`);
+			await interaction.reply({ embeds: [embed], ephemeral: true});
 		} else {
-
-			await interaction.reply({ content: 'Your PC was succesfully saved!\nYou can now use /wakemypc to send magic packet!', ephemeral: true});
+			embed.setTitle(`PC ${interaction.options.getString('friendly_name')} succesfully added`);
+			embed.setDescription('Your PC was succesfully saved!\nYou can now use /wakemypc to send magic packet!');
+			await interaction.reply({ embeds: [embed], ephemeral: true});
 		}
 	},
 };

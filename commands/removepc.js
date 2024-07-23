@@ -1,4 +1,4 @@
-const { SlashCommandBuilder } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 
 const wolManager = require('../wolmanager');
 
@@ -13,11 +13,18 @@ module.exports = {
 				.setAutocomplete(true)),
 	async execute(interaction) {
 
+
+		const embed = new EmbedBuilder()
+			.setTimestamp();
+
 		const result = wolManager.removePc(interaction.user.id, interaction.options.getString('friendly_name'));
 		if(result.error) {
-			await interaction.reply({ content: result.error, ephemeral: true});
+			embed.setTitle(`${result.error}`);
+			await interaction.reply({ embeds: [embed], ephemeral: true});
 		} else {
-			await interaction.reply({ content: 'PC succesfully removed', ephemeral: true});
+
+			embed.setTitle(`PC ${interaction.options.getString('friendly_name')} succesfully removed`);
+			await interaction.reply({ embeds: [embed], ephemeral: true});
 		}
 	},
 	async autocomplete(interaction) {

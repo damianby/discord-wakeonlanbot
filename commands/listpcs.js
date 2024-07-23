@@ -1,4 +1,4 @@
-const { SlashCommandBuilder } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 
 const wolManager = require('../wolmanager');
 
@@ -10,10 +10,28 @@ module.exports = {
 
 		const result = wolManager.getPcs(interaction.user.id);
 
+		const embed = new EmbedBuilder()
+
+			.setTitle('List of PC\'s')
+			.setTimestamp();
+
 		if(result.length > 0) {
-			await interaction.reply({ content: JSON.stringify(result, null, '\t'), ephemeral: true});
+
+
+			for(let i = 0; i < result.length; i++) {
+				embed.addFields(
+					{ name: result[i].friendlyName, value: `${result[i].mac}\n${result[i].ipAddress}` },
+				)
+			}
+			
+			embed.setColor(0x00ff00);
+
+			await interaction.reply({ embeds: [embed], ephemeral: true});
 		} else {
-			await interaction.reply({ content: 'No PC\'s found!', ephemeral: true});
+
+			embed.setColor(0xff0000);
+
+			await interaction.reply({ embeds: [embed], ephemeral: true});
 		}
 	},
 };
