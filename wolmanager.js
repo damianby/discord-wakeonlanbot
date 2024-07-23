@@ -83,8 +83,6 @@ async function wakePc(clientMac, clientIp) {
 			timeout: cfg.timeout,
 	});
 
-	console.log(res);
-		
 	return res.alive
 }
 

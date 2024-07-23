@@ -33,9 +33,12 @@ module.exports = {
 		const result = wolManager.addPc(interaction.user.id, friendlyName, macAddress, ipAddress);
 
 		if(result.error) {
+			embed.setColor(0xff0000);
 			embed.setTitle(`${result.error}`);
 			await interaction.reply({ embeds: [embed], ephemeral: true});
 		} else {
+
+			embed.setColor(0x00ff00);
 			embed.setTitle(`PC ${interaction.options.getString('friendly_name')} succesfully added`);
 			embed.setDescription('Your PC was succesfully saved!\nYou can now use /wakemypc to send magic packet!');
 			await interaction.reply({ embeds: [embed], ephemeral: true});

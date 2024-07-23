@@ -37,12 +37,13 @@ module.exports = {
 		.setTitle('PC Startup')
 		.setTimestamp();
 
-
+		embed.setDescription(`Magic packet sent to ${friendlyName} with MAC address ${clientPc.mac}.\nWaiting for response from address ${clientPc.ipAddress}!`);
+		
 		await interaction.reply( {embeds: [embed], ephemeral: true });
 
 		if(clientPc) {
 
-			embed.setDescription(`Magic packet sent to ${friendlyName} with MAC address ${clientPc.mac}.\nWaiting for response from address ${clientPc.ipAddress}!`);
+			
 
 			wolManager.wakePc(clientPc.mac, clientPc.ipAddress).then( (isAlive) => {
 				if(isAlive) {
