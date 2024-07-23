@@ -69,47 +69,23 @@ function addPc(clientId, friendlyName, mac, ipAddress) {
 	return {};
 }
 
-function wakePc(clientId, friendlyName, aliveCallback) {
+async function wakePc(clientMac, clientIp) {
 	
-	const pcs = getPcs(clientId);
+	wake(networks.fox.address, clientMac);
 
-	let clientPc = null;
+	let cfg = {
+		timeout: 120,
+	};
 
-	if(!friendlyName || friendlyName.length == 0) {
-		if(pcs.length > 0) {
-			clientPc = pcs[0];
-		}
-	} else {
-		for(let i = 0 ; i < pcs.length ; i++) {
-			if(pcs[i].friendlyName == friendlyName) {
-				clientPc = pcs[i];
-				break;
-			}
-		}
-	}
-	if(clientPc) {
-		wake(networks.fox.address, clientPc.mac);
+	let host = clientIp;
 
-		let cfg = {
-			timeout: 120,
-		};
+	let res = await ping.promise.probe(host, {
+			timeout: cfg.timeout,
+	});
 
-		let host = clientPc.ipAddress;
-		setTimeout(() => {
-			ping.sys.probe(host, function(isAlive, error){
-
-				console.log(error);
-				aliveCallback(isAlive, cfg.timeout);
-				
-				var msg = isAlive ? 'host ' + host + ' is alive' : 'host ' + host + ' is dead';
-				console.log(msg);
-			}, cfg);
-		}, 2000);
-
-		return {client: clientPc};
-	} else {
-		return {error: 'PC not found'};
-	}
+	console.log(res);
+		
+	return res.alive
 }
 
 

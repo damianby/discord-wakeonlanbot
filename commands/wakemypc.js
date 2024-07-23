@@ -15,33 +15,50 @@ module.exports = {
 
 		const friendlyName = interaction.options.getString('friendly_name');
 
+		const pcs = wolManager.getPcs(interaction.user.id);
+
+		let clientPc = null;
+	
+		if(!friendlyName || friendlyName.length == 0) {
+			if(pcs.length > 0) {
+				clientPc = pcs[0];
+			}
+		} else {
+			for(let i = 0 ; i < pcs.length ; i++) {
+				if(pcs[i].friendlyName == friendlyName) {
+					clientPc = pcs[i];
+					break;
+				}
+			}
+		}
+
 		const embed = new EmbedBuilder()
 		.setColor(0xFF0000)
 		.setTitle('PC Startup')
 		.setTimestamp();
-		
-		const result = wolManager.wakePc(interaction.user.id, friendlyName, (isAlive, timeout) => {
-			if(isAlive) {
 
-				embed.setDescription('Your PC is online!');
-				embed.setColor(0x00FF00);
-
-				interaction.editReply({ embeds: [embed], ephemeral: true });
-			} else {
-				embed.setDescription(`After ${timeout} your PC is still dead`);
-				interaction.editReply({ embeds: [embed], ephemeral: true });
-			}
-		});
-
-		if(result.client) {
-			embed.setDescription(`Magic packet sent to ${result.client.friendlyName} with MAC address ${result.client.mac}.\nWaiting for response from address ${result.client.ipAddress}!`);
-			embed.setFooter({ text: 'This message will be automatically edited when PC is found online', iconURL: 'https://i.imgur.com/AfFp7pu.png'});
-
-		} else {
-			embed.setDescription(result.error);
-		}
 
 		await interaction.reply( {embeds: [embed], ephemeral: true });
+
+		if(clientPc) {
+
+			embed.setDescription(`Magic packet sent to ${friendlyName} with MAC address ${clientPc.mac}.\nWaiting for response from address ${clientPc.ipAddress}!`);
+
+			wolManager.wakePc(clientPc.mac, clientPc.ipAddress).then( (isAlive) => {
+				if(isAlive) {
+	
+					embed.setDescription('Your PC is online!');
+					embed.setColor(0x00FF00);
+	
+					interaction.editReply({ embeds: [embed], ephemeral: true });
+				} else {
+					embed.setDescription(`After ${timeout} your PC is still dead`);
+					interaction.editReply({ embeds: [embed], ephemeral: true });
+				}
+			});
+		} else {
+			embed.setDescription("PC not found");
+		}
 
 	},
 	async autocomplete(interaction) {
