@@ -13,11 +13,7 @@ module.exports = {
 		.addStringOption(option =>
 			option.setName('mac_address')
 				.setDescription('Mac address of your PC')
-				.setRequired(true))
-		.addStringOption(option =>
-			option.setName('ip_address')
-				.setDescription('IP address of your pc to test if it\'s online')
-				.setRequired(false)),
+				.setRequired(true)),
 	async execute(interaction) {
 
 
@@ -28,9 +24,8 @@ module.exports = {
 
 		const friendlyName = interaction.options.getString('friendly_name');
 		const macAddress = interaction.options.getString('mac_address');
-		const ipAddress = interaction.options.getString('ip_address') ?? null;
 
-		const result = wolManager.addPc(interaction.user.id, friendlyName, macAddress, ipAddress);
+		const result = wolManager.addPc(interaction.user.id, friendlyName, macAddress);
 
 		if(result.error) {
 			embed.setColor(0xff0000);

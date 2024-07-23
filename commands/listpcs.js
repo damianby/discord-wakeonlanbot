@@ -20,7 +20,7 @@ module.exports = {
 
 			for(let i = 0; i < result.length; i++) {
 				embed.addFields(
-					{ name: result[i].friendlyName, value: `${result[i].mac}\n${result[i].ipAddress}` },
+					{ name: result[i].friendlyName, value: `${result[i].mac}` },
 				)
 			}
 			

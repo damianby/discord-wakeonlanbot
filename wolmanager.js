@@ -91,7 +91,7 @@ function getPcs(clientId) {
 	return db.get(clientId) ?? [];
 }
 
-function addPc(clientId, friendlyName, mac, ipAddress) {
+function addPc(clientId, friendlyName, mac) {
 	if(!clientId) {
 		return {error: 'Client ID is empty'};
 	}
@@ -104,7 +104,7 @@ function addPc(clientId, friendlyName, mac, ipAddress) {
 	}
 
 	const client = db.get(clientId) ?? [];
-	client.push({friendlyName: friendlyName, mac: mac, ipAddress: ipAddress});
+	client.push({friendlyName: friendlyName, mac: mac});
 
 	db.set(clientId, client);
 

@@ -53,7 +53,7 @@ module.exports = {
 	
 					interaction.editReply({ embeds: [embed], ephemeral: true });
 				} else {
-					embed.setDescription(`After couple of minutes your PC is still dead`);
+					embed.setDescription(`After couple of minutes your PC is still dead, maybe settings?`);
 					interaction.editReply({ embeds: [embed], ephemeral: true });
 				}
 			});
