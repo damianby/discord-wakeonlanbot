@@ -10,7 +10,7 @@ const ping = require('ping');
 
 const networks = {
 	fox: {
-		address: '192.168.1.255'
+		addresses: ['192.168.1.255', '192.168.50.255']
 	}
 };
 
@@ -138,7 +138,9 @@ function timeoutCheckAlive(mac, timeout) {
 
 async function wakePc(clientMac, clientIp) {
 	
-	wake(networks.fox.address, clientMac);
+	for(let i = 0; i < networks.fox.addresses.length; i++) {
+		wake(networks.fox.addresses[i], clientMac);
+	}
 
 	let res = await timeoutCheckAlive(clientMac, 180000);
 
