@@ -132,7 +132,7 @@ function timeoutCheckAlive(mac, timeout) {
 			} else {
 				
 			}
-		}, 2000);
+		}, 5000);
 	});
 }
 
